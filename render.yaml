@@ -1,0 +1,38 @@
+# Render — Backend Service (standalone repo)
+# Connect THIS repo to Render as a Web Service.
+# Set all envVars with sync:false in the Render Dashboard → Environment section.
+
+services:
+  - type: web
+    name: webigeeks-api
+    env: node
+    region: singapore       # closest to India; use 'ohio' for US
+    plan: free               # upgrade to 'starter' ($7/mo) for always-on
+
+    buildCommand: npm install
+    startCommand: npm start
+
+    autoDeploy: true
+    branch: main
+
+    # After first deploy → open Render Shell and run: npm run seed
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000          # Render uses 10000 internally
+      - key: HOST
+        value: 0.0.0.0        # MUST be 0.0.0.0 on Render (not 127.0.0.1)
+      - key: MONGO_URI
+        sync: false           # Set in Render Dashboard — do NOT commit the real URI
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_JWT_SECRET
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CLIENT_ORIGIN
+        sync: false           # Your Netlify URL e.g. https://webigeeks.netlify.app

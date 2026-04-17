@@ -1,0 +1,13 @@
+# dependencies
+node_modules/
+
+# environment
+.env
+.env.local
+
+# logs
+*.log
+
+# misc
+.DS_Store
+src/data/users.json
