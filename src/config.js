@@ -1,14 +1,13 @@
 export const PORT = process.env.PORT || 4000;
-export const HOST = process.env.HOST || '0.0.0.0';
-export const JWT_SECRET = process.env.JWT_SECRET || 'dev-interview-prep-secret';
-export const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
-export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@careersprintr.com';
-export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
-export const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET || 'admin-dev-secret-key';
-export const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/webigeeks_prep';
-
-// Log on startup so you can confirm env vars are loaded in Render logs
-console.log(`[config] ADMIN_EMAIL loaded: ${ADMIN_EMAIL}`);
-console.log(`[config] ADMIN_PASSWORD set: ${ADMIN_PASSWORD ? 'YES (' + ADMIN_PASSWORD.length + ' chars)' : 'NO - using default'}`);
-console.log(`[config] CLIENT_ORIGIN: ${CLIENT_ORIGIN}`);
-
+export const HOST = process.env.HOST || "0.0.0.0";
+export const JWT_SECRET = process.env.JWT_SECRET || "dev-interview-prep-secret";
+export const CLIENT_ORIGIN =
+  process.env.CLIENT_ORIGIN || "http://localhost:5173";
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@careersprintr.com";
+export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+export const ADMIN_JWT_SECRET =
+  process.env.ADMIN_JWT_SECRET || "admin-dev-secret-key";
+// export const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/webigeeks_prep';
+export const MONGO_URI =
+  process.env.MONGO_URI ||
+  "mongodb+srv://admin:CND8107TW5@webigeekscluster.vkhtg.mongodb.net/?appName=webigeeksCluster/WEBIGEEKS_INTERVIEW_PREP";
