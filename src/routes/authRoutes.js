@@ -9,9 +9,13 @@ const VALID_COURSES = ['mern-stack', 'data-analytics'];
 
 function sanitizeUser(user) {
   const obj = user.toObject ? user.toObject() : { ...user };
-  delete obj.password;
-  delete obj.__v;
-  return obj;
+  const { _id, password, __v, isApproved, enrolledTrack, ...rest } = obj;
+  return {
+    id:       (_id ?? obj.id)?.toString(),
+    approved: isApproved ?? false,
+    course:   enrolledTrack ?? null,
+    ...rest,
+  };
 }
 
 router.post('/register', async (request, response, next) => {

@@ -6,16 +6,31 @@ import { User } from '../models/User.js';
 
 const router = express.Router();
 
-function sanitizeUser(user) {
+/**
+ * Converts a Mongoose/lean user doc to the shape the frontend expects:
+ *   _id       → id  (string)
+ *   isApproved → approved  (frontend reads student.approved)
+ *   enrolledTrack → course  (frontend reads student.course)
+ */
+function toClientStudent(user) {
   const obj = user.toObject ? user.toObject() : { ...user };
-  const id = obj._id?.toString() ?? obj.id;
-  delete obj.password;
-  delete obj.__v;
-  delete obj._id;
-  return { id, ...obj };
+  const { _id, password, __v, isApproved, enrolledTrack, progress, ...rest } = obj;
+  return {
+    id:       (_id ?? obj.id)?.toString(),
+    approved: isApproved ?? false,
+    course:   enrolledTrack ?? null,
+    ...rest,
+    progress: {
+      savedQuestions:     progress?.savedQuestions     ?? [],
+      importantQuestions: progress?.importantQuestions ?? [],
+      completedTopics:    progress?.completedTopics    ?? [],
+      topicActions:       progress?.topicActions       ?? {},
+      questionActions:    progress?.questionActions    ?? {},
+    },
+  };
 }
 
-// Admin login
+// ── Admin login ───────────────────────────────────────────────
 router.post('/login', async (request, response) => {
   const { email, password } = request.body;
 
@@ -37,31 +52,17 @@ router.post('/login', async (request, response) => {
   });
 });
 
-// Get all students
+// ── Get all students ──────────────────────────────────────────
 router.get('/students', requireAdmin, async (request, response, next) => {
   try {
     const users = await User.find().sort({ createdAt: -1 }).lean();
-    const students = users.map((user) => {
-      const { password, __v, _id, ...rest } = user;
-      return {
-        id: _id.toString(),   // ← normalize _id → id for frontend compatibility
-        ...rest,
-        progress: {
-          savedQuestions:     user.progress?.savedQuestions     ?? [],
-          importantQuestions: user.progress?.importantQuestions ?? [],
-          completedTopics:    user.progress?.completedTopics    ?? [],
-          topicActions:       user.progress?.topicActions       ?? {},
-          questionActions:    user.progress?.questionActions    ?? {},
-        },
-      };
-    });
-    return response.json({ students });
+    return response.json({ students: users.map(toClientStudent) });
   } catch (err) {
     next(err);
   }
 });
 
-// Approve a student
+// ── Approve a student ─────────────────────────────────────────
 router.patch('/students/:id/approve', requireAdmin, async (request, response, next) => {
   try {
     const user = await User.findByIdAndUpdate(
@@ -74,13 +75,13 @@ router.patch('/students/:id/approve', requireAdmin, async (request, response, ne
       return response.status(404).json({ message: 'Student not found.' });
     }
 
-    return response.json({ student: sanitizeUser(user) });
+    return response.json({ student: toClientStudent(user) });
   } catch (err) {
     next(err);
   }
 });
 
-// Reject / delete a student
+// ── Delete / reject a student ─────────────────────────────────
 router.delete('/students/:id', requireAdmin, async (request, response, next) => {
   try {
     const result = await User.findByIdAndDelete(request.params.id);
