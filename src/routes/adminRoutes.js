@@ -8,9 +8,11 @@ const router = express.Router();
 
 function sanitizeUser(user) {
   const obj = user.toObject ? user.toObject() : { ...user };
+  const id = obj._id?.toString() ?? obj.id;
   delete obj.password;
   delete obj.__v;
-  return obj;
+  delete obj._id;
+  return { id, ...obj };
 }
 
 // Admin login
@@ -40,8 +42,9 @@ router.get('/students', requireAdmin, async (request, response, next) => {
   try {
     const users = await User.find().sort({ createdAt: -1 }).lean();
     const students = users.map((user) => {
-      const { password, __v, ...rest } = user;
+      const { password, __v, _id, ...rest } = user;
       return {
+        id: _id.toString(),   // ← normalize _id → id for frontend compatibility
         ...rest,
         progress: {
           savedQuestions:     user.progress?.savedQuestions     ?? [],
