@@ -53,13 +53,17 @@ function deriveTopicId(questionId) {
     'mdb':    'mongodb',
     'mong':   'mongoose',
     'auth':   'authentication',
-    'bcr':    'bcrypt',
-    'xl':     'excel',
-    'py':     'python',
-    'pd':     'pandas',
-    'np':     'numpy',
-    'tab':    'tableau',
-    'pbi':    'power-bi',
+    'bcr':         'bcrypt',
+    'passport':    'passport-local',
+    'passportga':  'passport-google-oauth20',
+    'flex':        'flexbox',
+    'xl':          'excel',
+    'py':          'python',
+    'pd':          'pandas',
+    'np':          'numpy',
+    'plt':         'matplotlib',
+    'tab':         'tableau',
+    'pbi':         'power-bi',
   };
   
   return prefixMap[prefix] || prefix;
@@ -70,8 +74,11 @@ import { JS_QUESTIONS, REACT_QUESTIONS } from '../data/q_js_react.js';
 import { NODE_QUESTIONS, EXPRESS_QUESTIONS } from '../data/q_node_express.js';
 import { MONGO_QUESTIONS, MONGOOSE_QUESTIONS } from '../data/q_mongodb_mongoose.js';
 import { AUTH_QUESTIONS, JWT_QUESTIONS } from '../data/q_auth_jwt.js';
+import { BCRYPT_QUESTIONS, PASSPORT_LOCAL_QUESTIONS, PASSPORT_GOOGLE_OAUTH20_QUESTIONS } from '../data/q_passport_bcrypt.js';
 import { SQL_QUESTIONS, PYTHON_QUESTIONS } from '../data/q_sql_python.js';
 import { ANALYTICS_QUESTIONS } from '../data/q_analytics.js';
+import { FLEXBOX_QUESTIONS } from '../data/q_flexbox.js';
+import { MATPLOTLIB_QUESTIONS } from '../data/q_matplotlib.js';
 
 // ── Inline question bank ─────────────────────────────────────────────────────
 // This mirrors the frontend files exactly so the DB stays in sync.
@@ -81,6 +88,7 @@ import { ANALYTICS_QUESTIONS } from '../data/q_analytics.js';
 const RAW_QUESTIONS = [
   ...HTML_QUESTIONS,
   ...CSS_QUESTIONS,
+  ...FLEXBOX_QUESTIONS,
   ...JS_QUESTIONS,
   ...REACT_QUESTIONS,
   ...NODE_QUESTIONS,
@@ -88,9 +96,13 @@ const RAW_QUESTIONS = [
   ...MONGO_QUESTIONS,
   ...MONGOOSE_QUESTIONS,
   ...AUTH_QUESTIONS,
+  ...BCRYPT_QUESTIONS,
+  ...PASSPORT_LOCAL_QUESTIONS,
+  ...PASSPORT_GOOGLE_OAUTH20_QUESTIONS,
   ...JWT_QUESTIONS,
   ...SQL_QUESTIONS,
   ...PYTHON_QUESTIONS,
+  ...MATPLOTLIB_QUESTIONS,
   ...ANALYTICS_QUESTIONS,
 ];
 
