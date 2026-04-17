@@ -14,7 +14,7 @@ import { Question } from '../models/Question.js';
 // Each entry: { id, topicId?, experienceLevel, type, question, answer, code?, explanation?, output?, choices? }
 // topicId and trackId are added by the TOPIC_MAP below.
 
-const TOPIC_MAP = {
+const TRACK_MAP = {
   // MERN Stack
   'html':                    'mern-stack',
   'css':                     'mern-stack',
@@ -34,35 +34,35 @@ const TOPIC_MAP = {
   'excel':       'data-analytics',
   'sql':         'data-analytics',
   'python':      'data-analytics',
-  'py':          'data-analytics',
   'pandas':      'data-analytics',
-  'pd':          'data-analytics',
   'numpy':       'data-analytics',
-  'np':          'data-analytics',
   'matplotlib':  'data-analytics',
   'tableau':     'data-analytics',
-  'tab':         'data-analytics',
   'power-bi':    'data-analytics',
-  'pbi':         'data-analytics',
-  'bcr':         'mern-stack',
-  'mong':        'mern-stack',
-  'mdb':         'mern-stack',
-  'exp':         'mern-stack',
-  'js':          'mern-stack',
-  'xl':          'data-analytics',
 };
 
-// Derive topic from the question's id prefix (e.g. "html-f1" → "html")
+// Derive actual topicId from the question's id prefix (e.g. "exp-f1" -> "express-js")
 function deriveTopicId(questionId) {
-  // id format: <topic>-<level><number>  e.g. html-f1, node-j2, power-bi-m1
-  // We match against known topic keys (longest match wins)
-  const sorted = Object.keys(TOPIC_MAP).sort((a, b) => b.length - a.length);
-  for (const topic of sorted) {
-    const safe = topic.replace(/-/g, '-'); // same
-    if (questionId.startsWith(safe + '-')) return topic;
-  }
-  // Fallback: take everything before the last -<level><digit>
-  return questionId.replace(/-[fmj]\d+$/, '');
+  // id format: <prefix>-<level><number>  e.g. html-f1, node-j2, power-bi-m1
+  const prefix = questionId.replace(/-[fmj]\d+$/, '');
+  
+  const prefixMap = {
+    'js':     'javascript',
+    'node':   'node-js',
+    'exp':    'express-js',
+    'mdb':    'mongodb',
+    'mong':   'mongoose',
+    'auth':   'authentication',
+    'bcr':    'bcrypt',
+    'xl':     'excel',
+    'py':     'python',
+    'pd':     'pandas',
+    'np':     'numpy',
+    'tab':    'tableau',
+    'pbi':    'power-bi',
+  };
+  
+  return prefixMap[prefix] || prefix;
 }
 
 import { HTML_QUESTIONS, CSS_QUESTIONS } from '../data/q_html_css.js';
@@ -103,7 +103,7 @@ export async function seedQuestions() {
   for (let i = 0; i < RAW_QUESTIONS.length; i++) {
     const raw = RAW_QUESTIONS[i];
     const topicId = deriveTopicId(raw.id);
-    const trackId = TOPIC_MAP[topicId] ?? 'mern-stack';
+    const trackId = TRACK_MAP[topicId] ?? 'mern-stack';
 
     const doc = {
       questionId:      raw.id,
