@@ -220,12 +220,8 @@ const RAW_QUESTIONS = [
   { id:'pbi2-m1', experienceLevel:'mid', type:'conceptual', question:'What is the CALCULATE function and how does context transition work?', answer:'CALCULATE(expression, filters) evaluates expression in a modified filter context. Context transition: when called inside a row context (calculated column), it converts the row context into an equivalent filter context automatically.' },
 ];
 
-// ── Seed function ────────────────────────────────────────────────────────────
-async function seed() {
-  console.log('Connecting to MongoDB...');
-  await mongoose.connect(MONGO_URI);
-  console.log(`Connected to: ${MONGO_URI}`);
-
+// ── Core seed logic (reusable — caller manages DB connection) ────────────────
+export async function seedQuestions() {
   let inserted = 0;
   let updated  = 0;
   let errors   = 0;
@@ -271,10 +267,21 @@ async function seed() {
   console.log(`   Updated:  ${updated}`);
   console.log(`   Errors:   ${errors}`);
   console.log(`   Total:    ${RAW_QUESTIONS.length}`);
-  await mongoose.disconnect();
+  return { inserted, updated, errors };
 }
 
-seed().catch((err) => {
-  console.error('Seed failed:', err);
-  process.exit(1);
-});
+// ── Standalone CLI runner (npm run seed) ─────────────────────────────────────
+// Only runs when this script is executed directly, not when imported.
+if (process.argv[1].includes('seedQuestions')) {
+  (async () => {
+    console.log('Connecting to MongoDB...');
+    await mongoose.connect(MONGO_URI);
+    console.log(`Connected to: ${MONGO_URI}`);
+    await seedQuestions();
+    await mongoose.disconnect();
+    process.exit(0);
+  })().catch((err) => {
+    console.error('Seed failed:', err);
+    process.exit(1);
+  });
+}
